@@ -2,24 +2,49 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(RoleSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $adminRole = Role::query()->where('slug', 'admin')->firstOrFail();
+        $managerRole = Role::query()->where('slug', 'manager')->firstOrFail();
+        $cashierRole = Role::query()->where('slug', 'cashier')->firstOrFail();
+
+        User::query()->updateOrCreate(
+            ['email' => 'admin@pos.com'],
+            [
+                'name' => 'POS Admin',
+                'password' => Hash::make('Password'),
+                'role_id' => $adminRole->id,
+            ]
+        );
+
+        User::query()->updateOrCreate(
+            ['email' => 'manager@pos.com'],
+            [
+                'name' => 'POS Manager',
+                'password' => Hash::make('Password'),
+                'role_id' => $managerRole->id,
+            ]
+        );
+
+        User::query()->updateOrCreate(
+            ['email' => 'cashier@pos.com'],
+            [
+                'name' => 'POS Cashier',
+                'password' => Hash::make('Password'),
+                'role_id' => $cashierRole->id,
+            ]
+        );
     }
 }

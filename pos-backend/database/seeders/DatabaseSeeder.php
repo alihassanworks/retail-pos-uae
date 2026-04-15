@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(RoleSeeder::class);
+        $this->call(CategorySeeder::class);
 
         $adminRole = Role::query()->where('slug', 'admin')->firstOrFail();
         $managerRole = Role::query()->where('slug', 'manager')->firstOrFail();
